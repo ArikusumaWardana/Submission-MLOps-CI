@@ -30,8 +30,10 @@ def train_with_tuning():
 
     # 4. Mulai MLflow Run
     # PENTING: Jangan pakai autolog() di sini karena syarat Skilled minta manual logging
-    with mlflow.start_run(run_name="Hyperparameter_Tuning_RF"):
+    with mlflow.start_run() as run:
         
+        mlflow.set_tag("mlflow.runName", "Hyperparameter_Tuning_RF")
+
         print("Mulai Hyperparameter Tuning...")
         rf = RandomForestClassifier(random_state=42)
         
