@@ -29,7 +29,7 @@ jobs:
     - name: Run MLflow Project
       run: |
         cd MLProject
-        mlflow run . --env-manager=local
+        mlflow run . --env-manager=local --experiment-name="Telco_Churn_Skilled"
 
     # 5. SKILLED POINT: Menyimpan Artefak
     # Kita upload folder 'mlruns' (tempat MLflow menyimpan model) ke GitHub Artifacts

@@ -28,51 +28,50 @@ def train_with_tuning():
         'min_samples_split': [2, 5]
     }
 
-    # 4. Mulai MLflow Run
-    # PENTING: Jangan pakai autolog() di sini karena syarat Skilled minta manual logging
-    with mlflow.start_run(nested=True) as run:
-        
-        mlflow.set_tag("mlflow.runName", "Hyperparameter_Tuning_RF")
+    # Menggunakan run yang sudah dibuat oleh 'mlflow run' command
+    # Tidak perlu start_run() baru karena sudah ada active run
+    
+    mlflow.set_tag("mlflow.runName", "Hyperparameter_Tuning_RF")
 
-        print("Mulai Hyperparameter Tuning...")
-        rf = RandomForestClassifier(random_state=42)
-        
-        # Menggunakan GridSearchCV
-        grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
-        grid_search.fit(X_train, y_train)
+    print("Mulai Hyperparameter Tuning...")
+    rf = RandomForestClassifier(random_state=42)
+    
+    # Menggunakan GridSearchCV
+    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    grid_search.fit(X_train, y_train)
 
-        # Ambil model terbaik
-        best_model = grid_search.best_estimator_
-        best_params = grid_search.best_params_
+    # Ambil model terbaik
+    best_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
 
-        print(f"Model terbaik ditemukan: {best_params}")
+    print(f"Model terbaik ditemukan: {best_params}")
 
-        # 5. Evaluasi Model Terbaik
-        y_pred = best_model.predict(X_test)
+    # 5. Evaluasi Model Terbaik
+    y_pred = best_model.predict(X_test)
 
-        acc = accuracy_score(y_test, y_pred)
-        prec = precision_score(y_test, y_pred)
-        rec = recall_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
+    acc = accuracy_score(y_test, y_pred)
+    prec = precision_score(y_test, y_pred)
+    rec = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
 
-        print(f"Metrics -> Acc: {acc:.4f}, Prec: {prec:.4f}, Rec: {rec:.4f}, F1: {f1:.4f}")
+    print(f"Metrics -> Acc: {acc:.4f}, Prec: {prec:.4f}, Rec: {rec:.4f}, F1: {f1:.4f}")
 
-        # 6. MANUAL LOGGING (Syarat Wajib Skilled)
-        
-        # a. Log Parameters
-        for param_name, param_value in best_params.items():
-            mlflow.log_param(param_name, param_value)
-        
-        # b. Log Metrics
-        mlflow.log_metric("accuracy", acc)
-        mlflow.log_metric("precision", prec)
-        mlflow.log_metric("recall", rec)
-        mlflow.log_metric("f1_score", f1)
+    # 6. MANUAL LOGGING (Syarat Wajib Skilled)
+    
+    # a. Log Parameters
+    for param_name, param_value in best_params.items():
+        mlflow.log_param(param_name, param_value)
+    
+    # b. Log Metrics
+    mlflow.log_metric("accuracy", acc)
+    mlflow.log_metric("precision", prec)
+    mlflow.log_metric("recall", rec)
+    mlflow.log_metric("f1_score", f1)
 
-        # c. Log Model (Menyimpan Artefak)
-        mlflow.sklearn.log_model(best_model, name="model")
-        
-        print("Logging ke MLflow selesai.")
+    # c. Log Model (Menyimpan Artefak)
+    mlflow.sklearn.log_model(best_model, name="model")
+    
+    print("Logging ke MLflow selesai.")
 
 if __name__ == "__main__":
     train_with_tuning()
