@@ -1,0 +1,40 @@
+name: MLflow Training Workflow
+
+# Trigger: Jalan setiap kali ada push ke repository
+on: [push]
+
+jobs:
+  build-and-train:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Ambil kode dari repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Siapkan Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    # 3. Install MLflow dan dependencies dasar
+    - name: Install MLflow & Dependencies
+      run: |
+        pip install mlflow
+        pip install pandas numpy scikit-learn matplotlib seaborn
+
+    # 4. Jalankan Training menggunakan MLProject
+    # Kita masuk ke folder MLProject lalu jalankan
+    - name: Run MLflow Project
+      run: |
+        cd MLProject
+        mlflow run . --no-conda
+
+    # 5. SKILLED POINT: Menyimpan Artefak
+    # Kita upload folder 'mlruns' (tempat MLflow menyimpan model) ke GitHub Artifacts
+    - name: Upload MLflow Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: trained-model-artifacts
+        path: MLProject/mlruns
