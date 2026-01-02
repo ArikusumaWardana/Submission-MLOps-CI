@@ -30,7 +30,7 @@ def train_with_tuning():
 
     # 4. Mulai MLflow Run
     # PENTING: Jangan pakai autolog() di sini karena syarat Skilled minta manual logging
-    with mlflow.start_run() as run:
+    with mlflow.start_run(nested=True) as run:
         
         mlflow.set_tag("mlflow.runName", "Hyperparameter_Tuning_RF")
 
