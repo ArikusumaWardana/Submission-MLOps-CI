@@ -18,8 +18,8 @@ def train_with_tuning():
     print("Loading data...")
     X_train, X_test, y_train, y_test = load_data('telco_churn_preprocessing')
 
-    # 2. Set MLflow Experiment
-    mlflow.set_experiment("Telco_Churn_Skilled")
+    # Experiment sudah diset dari 'mlflow run --experiment-name' di workflow
+    # Tidak perlu set_experiment() lagi di sini
 
     # 3. Definisi Hyperparameter untuk Tuning
     param_grid = {
